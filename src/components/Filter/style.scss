@@ -1,0 +1,27 @@
+.filter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 50vw;
+    padding: 20px;
+    margin: auto;
+    background-color: #16b38b;
+    color: #edfcf6;
+    border-radius: 8px;
+}
+
+.date {
+    border: none;
+    border-radius: 3px;
+    outline: none;
+}
+
+.searchText {
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    padding: 5px;
+    width: 40vw;
+}

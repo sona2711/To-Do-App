@@ -1,0 +1,87 @@
+// :root {
+//     --color50: '#edfcf6';
+//     --color100: '#d2f9e8';
+//     --color200: '#aaf0d5';
+//     --color300: '#72e3bf';
+//     --color400: '#32c89d';
+//     --color500: '#16b38b';
+//     --color600: '#0a9172';
+//     --color700: '#08745d';
+//     --color800: '#095c4b';
+//     --color900: '#084c3f';
+//     --color950: '#032b24';
+// }
+
+
+* {
+    box-sizing: border-box;
+    outline: none;
+    margin: 0;
+    padding: 0
+}
+
+#container {
+    background-color: #edfcf6;
+    height: 100vh;
+}
+.main-title {
+    text-align: center;
+    color: #084c3f;
+}
+
+#form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 50vw;
+    padding: 20px;
+    margin: auto;
+    background-color: #08745d;
+    color: #edfcf6;
+    border-radius: 8px;
+}
+
+
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.task-body {
+    width: 30vw;
+    resize: none;
+    padding: 10px;
+}
+
+.form-title,
+.select-list,
+.date-input,
+.task-body,
+.add-btn {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-btn {
+    background-color: #edfcf6;
+    color: #084c3f;
+}
+
+
+.invalid {
+    padding: 5px;
+    outline: 2px solid #d30202;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.error {
+    color:#d30202;
+}
