@@ -1,5 +1,5 @@
 import { Calendar } from '../calendar';
-import { Validator } from '../validator';
+import { Validator } from '../validators/validator';
 import { observable } from "../../observable";
 import { state } from "../../state";
 import { Task } from "../../state";
@@ -14,15 +14,8 @@ export class  AddTaskForm {
     description: HTMLTextAreaElement;
     addTaskBtn: HTMLButtonElement;
     dateInputBtn: HTMLDivElement;
+    validator: Validator;
     id:number = 1;
-    task: Task = {
-        id: 0,
-        title: "",
-        description: "",
-        date: "",
-        priority: "",
-        completed: false,
-    };
     
     
     
@@ -34,6 +27,7 @@ constructor() {
     this.description = document.createElement("textarea");
     this.addTaskBtn = document.createElement("button");
     this.dateInputBtn= document.createElement("div")
+    this.validator = new Validator()
 
     
     this.createForm(this.form)
@@ -42,35 +36,33 @@ constructor() {
     this.createDateInput(this.dateInputBtn)
     this. createTextField(this.description)
     this.createSubmitButton(this.addTaskBtn)
-    this.getFormValue(this.form, this.task, this.addTaskBtn)
+    this.getFormValue()
+    this.setupFormSubmission(this.form, this.addTaskBtn)
     
-    console.log(this.inputTitle.value)
 
 }
    
 private createForm(form:HTMLFormElement ){
-    form.className = "form"
-    form.name = "task-form"
-    form.id = "form"
-    // this.form.method = "POST"
-    this.formWrapper?.appendChild(form)
+    form.className = "form";
+    form.name = "task-form";
+    form.id = "form";
+    this.formWrapper?.appendChild(form);
 
 }
 
  private createTitleInput(input:HTMLInputElement) {
     input.type = "text";
-    input.placeholder = "Title"
+    input.placeholder = "Title";
     input.className = "form-title"; 
     input.id = "form-title";
-    input.required = true;
-    input.value = ""
     this.form.appendChild(input); 
  }
 
  private createPriorityList(select: HTMLSelectElement) {
     select.className = "select-list";
     select.id = "select-list";
-    select.name = "priority"
+    select.name = "priority";
+    
 
 
     const options:string[] = ["High", "Medium","Low"];
@@ -92,7 +84,7 @@ private createForm(form:HTMLFormElement ){
 
     buttonDate.addEventListener("click", () => {
        const calendar = new Calendar();
-    
+
     })
 
  }
@@ -101,7 +93,6 @@ private createForm(form:HTMLFormElement ){
     textField.className = "task-body";
     textField.id= "task-body";
     textField.placeholder = "Description";
-    textField.value = ""
     this.form.appendChild(textField);
  }
 
@@ -109,14 +100,29 @@ private createForm(form:HTMLFormElement ){
 
  private createSubmitButton(button: HTMLButtonElement){
     button.className = "add-btn";
+    button.id = "addTaskBtn"
     button.innerHTML= "Add";
     this.form.appendChild(button);
 
  }
 
-private getFormValue(form:HTMLElement, task:Task, btn: HTMLButtonElement){
-    form.addEventListener('submit', (event)=> {
-        task = {
+
+ private setupFormSubmission(form: HTMLElement, btn: HTMLButtonElement) {
+        btn.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.getValidationErrors();
+
+            if (Object.keys(this.validator.getErrors()).length === 0) {
+                this.getFormValue();
+                this.form.reset();
+            }
+        });
+    }
+ 
+
+
+private getFormValue(){
+       let  task = {
             id: this.id++,
             title: this.inputTitle.value,
             description: this.description.value,
@@ -124,37 +130,55 @@ private getFormValue(form:HTMLElement, task:Task, btn: HTMLButtonElement){
             priority:this.selectOption.value,
             completed: true,
         }
-        console.log(task)
-
+       
         
-        // if(task.title.length === 0) {
-        //     const requiredError = new Validator(this.inputTitle)
-        // }else if(task.description.length === 0){
-        //     const requiredError = new Validator(this.description)
-        // }else if(task.date.length === 0){
-        //     const requiredError = new Validator(this.dateInputBtn)
-        // }else if(task.priority.length === 0){
-        //     const requiredError = new Validator(this.selectOption)
-        // }else {
-
-        observable.subscribe("addTask", (task:Task) => {
+        observable.subscribe("addTask", (task: Task) => {
             state.data.push(task);
             console.log(state.data);
-          });
-         
-         
-        btn.addEventListener("click", () => {
-            observable.emit("addTask", task)
-        })  
- 
-        
-        event.preventDefault();
-        this.form.reset()
-        // }
-    })
+        });
 
+        observable.emit("addTask", task);
+    }
+
+    private getValidationErrors (){
+      
+        let isValid = true;
+            
+        this.validator.clearAllErrors();
     
-
-}
+        if (!this.inputTitle.value.trim()) {
+            this.validator.createError(this.inputTitle.id, 'Title is required.');
+            this.validator.showError(this.inputTitle);
+            isValid = false;
+        }
+    
+        if (!this.selectOption.value.trim()) {
+            this.validator.createError(this.selectOption.id, 'Option is required.');
+            this.validator.showError(this.selectOption);
+            isValid = false;
+        }
+    
+        if (!this.description.value.trim()) {
+            this.validator.createError(this.description.id, 'Description is required.');
+            this.validator.showError(this.description);
+            isValid = false;
+        }
+    
+        
+        if (!this.dateInputBtn.innerHTML?.trim()) {
+            this.validator.createError(this.dateInputBtn.id, 'Date is required.');
+            this.validator.showError(this.dateInputBtn);
+            isValid = false;
+        }
+    
+        if (isValid) {
+            console.log("Form is valid!");
+          
+        } else {
+            console.log("Form is not valid!");
+            console.log(this.validator.getErrors());
+        }
+    }
+    
 
 }

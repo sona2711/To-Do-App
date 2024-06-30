@@ -19,7 +19,7 @@ export class TaskList {
 
   getTasks():void {
     state.data.forEach(el => {
-      console.log(el)
+      // console.log(el)
       const newRow = document.createElement("tr")
       Object.keys(el).forEach(key => {
         const rowTitle = document.createElement("th")
